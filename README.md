@@ -22,7 +22,7 @@ sudo ./install.sh
 Het standaard Bluetooth-adres is al ingesteld op:
 
 ```text
-C3:B3:63:51:60:7B
+AA:BB:CC:DD:EE:FF
 ```
 
 Aanpassen kan in `.env`.
