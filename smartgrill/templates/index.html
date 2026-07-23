@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SmartGrill</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div>
+        <p class="eyebrow">ToGrill AT-02</p>
+        <h1>SmartGrill</h1>
+      </div>
+      <div class="connection"><span id="dot"></span><span id="connection">Verbinden...</span></div>
+    </header>
+
+    <section class="meta">
+      <span>Batterij <strong id="battery">--</strong></span>
+      <span>Laatste update <strong id="updated">--</strong></span>
+    </section>
+
+    <section class="grid">
+      <article class="card kamado"><span>Kamado</span><strong id="kamado">--</strong><small>°C</small></article>
+      <article class="card"><span>Probe 1</span><strong id="probe_1">--</strong><small>°C</small></article>
+      <article class="card"><span>Probe 2</span><strong id="probe_2">--</strong><small>°C</small></article>
+      <article class="card"><span>Probe 3</span><strong id="probe_3">--</strong><small>°C</small></article>
+      <article class="card"><span>Probe 4</span><strong id="probe_4">--</strong><small>°C</small></article>
+    </section>
+  </main>
+  <script src="/static/app.js"></script>
+</body>
+</html>
