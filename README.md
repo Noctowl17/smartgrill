@@ -11,6 +11,9 @@ SmartGrill is a lightweight web dashboard and REST API for the ToGrill AT-02 Blu
 - Health endpoint for monitoring
 - Automatic startup through systemd
 - Suitable for use behind a reverse proxy
+- Installable web app with standards-based Web Push notifications
+- Per-probe minimum and maximum temperature alerts
+- Optional battery and Bluetooth-disconnection alerts
 - Tested on Raspberry Pi Zero W
 
 ## Requirements
@@ -89,6 +92,25 @@ Replace `IP-ADDRESS` with the IP address or hostname of the Raspberry Pi.
 - Settings API: `http://IP-ADDRESS:8000/api/settings`
 - Health API: `http://IP-ADDRESS:8000/api/health`
 - OpenAPI documentation: `http://IP-ADDRESS:8000/docs`
+
+## Web app and push notifications
+
+For push notifications, publish SmartGrill through an HTTPS reverse proxy.
+On iOS or iPadOS 16.4 or newer:
+
+1. Open SmartGrill through its HTTPS address.
+2. Use **Share → Add to Home Screen**.
+3. Open SmartGrill from the new Home Screen icon.
+4. Open **Settings** and select **Enable notifications**.
+5. Send a test notification before enabling temperature limits.
+
+Temperature, battery and connection alerts can be configured on the Settings
+page. SmartGrill stores Web Push subscriptions and its private VAPID key in the
+local `data/` directory. Do not publish this directory or its contents.
+
+> The existing settings and push API endpoints do not provide application-level
+> authentication. Protect an internet-facing SmartGrill installation through
+> the reverse proxy and do not expose port 8000 directly.
 
 ### Status example
 
@@ -182,7 +204,6 @@ If `gcc` or `cc1` is using CPU, compilation is still running.
 
 Planned improvements include:
 
-- Target temperatures and alerts
 - Temperature graphs and history
 - MQTT support
 - Improved Homey integration

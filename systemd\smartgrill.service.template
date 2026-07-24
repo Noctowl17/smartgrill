@@ -1,0 +1,19 @@
+[Unit]
+Description=SmartGrill AT-02 webserver
+After=network-online.target bluetooth.service
+Wants=network-online.target
+Requires=bluetooth.service
+
+[Service]
+Type=simple
+User=__USER__
+Group=__GROUP__
+WorkingDirectory=__DIR__
+EnvironmentFile=__DIR__/.env
+ExecStart=/bin/sh -c 'exec __DIR__/.venv/bin/uvicorn smartgrill.app:app --host "$SMARTGRILL_HOST" --port "$SMARTGRILL_PORT"'
+Restart=always
+RestartSec=10
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

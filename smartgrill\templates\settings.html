@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0d0f12">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Instellingen | SmartGrill</title>
+  <link rel="manifest" href="/static/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/static/icons/icon-192.png">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <main class="shell settings-shell">
+    <header>
+      <div>
+        <p class="eyebrow">ToGrill AT-02</p>
+        <h1>Instellingen</h1>
+      </div>
+      <a class="button secondary" href="/">← Terug naar dashboard</a>
+    </header>
+
+    <form id="settings-form" class="settings-card">
+      <section>
+        <h2>Bluetooth</h2>
+        <p class="section-description">Vul het Bluetooth MAC-adres van de thermometer in.</p>
+        <label>
+          Bluetooth-adres
+          <input
+            id="address"
+            name="address"
+            type="text"
+            autocomplete="off"
+            autocapitalize="characters"
+            spellcheck="false"
+            inputmode="text"
+            maxlength="17"
+            pattern="[0-9A-Fa-f]{2}(:[0-9A-Fa-f]{2}){5}"
+            placeholder="AA:BB:CC:DD:EE:FF"
+            aria-describedby="address-help"
+            required
+          >
+          <span id="address-help" class="field-help">Bijvoorbeeld AA:BB:CC:DD:EE:FF</span>
+        </label>
+      </section>
+
+      <section>
+        <h2>Verbinding</h2>
+        <p class="section-description">Bepaal hoe snel SmartGrill opnieuw verbindt en wanneer meetdata als verouderd geldt.</p>
+        <div class="form-grid">
+          <label>
+            Opnieuw verbinden na (seconden)
+            <input id="reconnect-delay" name="reconnect_delay" type="number" min="1" max="300" required>
+          </label>
+          <label>
+            Data verouderd na (seconden)
+            <input id="stale-after" name="stale_after" type="number" min="5" max="600" required>
+          </label>
+        </div>
+      </section>
+
+      <section>
+        <h2>Probe-namen</h2>
+        <p class="section-description">Kies herkenbare namen; deze worden ook op het dashboard gebruikt.</p>
+        <div id="probe-fields" class="form-grid"></div>
+      </section>
+
+      <div class="form-actions">
+        <p id="message" class="form-message" role="status" aria-live="polite"></p>
+        <button id="save-button" class="button" type="submit">Instellingen opslaan</button>
+      </div>
+    </form>
+
+    <form id="alerts-form" class="settings-card settings-spaced">
+      <section>
+        <h2>Temperatuurmeldingen</h2>
+        <p class="section-description">
+          Kies per sensor een onder- en/of bovengrens. Een nieuwe melding volgt
+          pas nadat de temperatuur voldoende van de grens is teruggekeerd.
+        </p>
+        <div id="alert-fields" class="alert-fields"></div>
+      </section>
+
+      <section>
+        <h2>Overige meldingen</h2>
+        <div class="form-grid">
+          <label class="toggle-field">
+            <span>
+              <input id="battery-alert-enabled" type="checkbox">
+              Lage batterij melden
+            </span>
+            <input
+              id="battery-minimum"
+              type="number"
+              min="0"
+              max="100"
+              step="1"
+              aria-label="Batterijgrens in procent"
+            >
+          </label>
+          <label class="toggle-field toggle-only">
+            <span>
+              <input id="connection-lost" type="checkbox">
+              Verbroken Bluetooth-verbinding melden
+            </span>
+          </label>
+          <label>
+            Hysterese (°C)
+            <input id="hysteresis" type="number" min="0.1" max="20" step="0.1">
+            <span class="field-help">
+              Voorkomt herhaalde meldingen wanneer een waarde rond de grens schommelt.
+            </span>
+          </label>
+        </div>
+      </section>
+
+      <div class="form-actions">
+        <p id="alerts-message" class="form-message" role="status" aria-live="polite"></p>
+        <button id="save-alerts-button" class="button" type="submit">
+          Alarmgrenzen opslaan
+        </button>
+      </div>
+    </form>
+
+    <section class="settings-card settings-spaced">
+      <section>
+        <h2>Web Push</h2>
+        <p class="section-description">
+          Voeg SmartGrill op een iPhone of iPad toe aan het beginscherm, open
+          daarna de webapp vanaf het pictogram en schakel hier meldingen in.
+        </p>
+        <div id="install-hint" class="info-box">
+          Op iOS: tik op Delen → Zet op beginscherm. Open SmartGrill vervolgens
+          vanaf het nieuwe pictogram.
+        </div>
+        <div class="push-actions">
+          <button id="enable-push" class="button" type="button">
+            Meldingen inschakelen
+          </button>
+          <button id="disable-push" class="button secondary" type="button" hidden>
+            Meldingen uitschakelen
+          </button>
+          <button id="test-push" class="button secondary" type="button" disabled>
+            Testmelding
+          </button>
+        </div>
+        <p id="push-message" class="form-message" role="status" aria-live="polite"></p>
+      </section>
+    </section>
+  </main>
+  <script src="/static/settings.js"></script>
+  <script src="/static/pwa.js"></script>
+</body>
+</html>

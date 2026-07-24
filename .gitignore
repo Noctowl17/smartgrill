@@ -1,6 +1,8 @@
 .env
 .venv/
 config.json
+alerts.json
+data/
 __pycache__/
 *.py[cod]
 *.log
