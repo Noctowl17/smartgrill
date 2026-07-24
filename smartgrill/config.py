@@ -8,6 +8,7 @@ from typing import Any
 
 BASE_DIR = Path(__file__).resolve().parent
 CONFIG_PATH = Path(os.getenv("SMARTGRILL_CONFIG", BASE_DIR.parent / "config.json"))
+DEFAULT_PROBE_NAMES = ["Ambiance", "Probe 1", "Probe 2", "Probe 3", "Probe 4"]
 
 
 def _integer(name: str, default: int) -> int:
@@ -27,15 +28,7 @@ class Settings:
     port: int = _integer("SMARTGRILL_PORT", 8000)
     reconnect_delay: int = _integer("RECONNECT_DELAY", 10)
     stale_after: int = _integer("STALE_AFTER", 15)
-    probe_names: dict[str, str] = field(
-        default_factory=lambda: {
-            "kamado": "Kamado",
-            "probe_1": "Probe 1",
-            "probe_2": "Probe 2",
-            "probe_3": "Probe 3",
-            "probe_4": "Probe 4",
-        }
-    )
+    probe_names: list[str] = field(default_factory=lambda: DEFAULT_PROBE_NAMES.copy())
 
     @property
     def configured(self) -> bool:
@@ -63,16 +56,16 @@ class Settings:
             raise ValueError("Verouderingsgrens moet tussen 5 en 600 seconden liggen")
 
         names = data.get("probe_names", self.probe_names)
-        if not isinstance(names, dict):
-            raise ValueError("Probe-namen zijn ongeldig")
+        if not isinstance(names, list) or len(names) != 5:
+            raise ValueError("Er moeten precies vijf probe-namen worden opgegeven")
 
         self.address = address
         self.reconnect_delay = reconnect_delay
         self.stale_after = stale_after
-        self.probe_names = {
-            key: str(names.get(key, self.probe_names.get(key, key))).strip() or key
-            for key in ("kamado", "probe_1", "probe_2", "probe_3", "probe_4")
-        }
+        self.probe_names = [
+            str(name).strip() or DEFAULT_PROBE_NAMES[index]
+            for index, name in enumerate(names)
+        ]
         self.save()
 
     def save(self) -> None:
