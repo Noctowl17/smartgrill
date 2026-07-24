@@ -10,12 +10,14 @@ All notable changes to SmartGrill will be documented in this file.
 - `.gitignore`
 - More robust installation and update scripts
 - Validation for required configuration files
+- Web-based settings page for Bluetooth, connection and probe-name settings
 
 ### Changed
 
 - FastAPI application version aligned with the project version
 - systemd service now uses host and port values from `.env`
 - Update process now refreshes the systemd service definition
+- Dashboard now uses the configured names for the ambient sensor and probes
 
 ## [0.1.0]
 

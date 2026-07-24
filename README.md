@@ -55,7 +55,15 @@ The installer creates a Python virtual environment, installs the dependencies, i
 
 ## Configuration
 
-SmartGrill reads its configuration from `.env`.
+Open `http://IP-ADDRESS:8000/settings` to configure:
+
+- the thermometer's Bluetooth MAC address;
+- reconnect and stale-data intervals;
+- the display names for the ambient sensor and four external probes.
+
+Web-managed settings are stored locally in `config.json`. This file is ignored by Git.
+
+The `.env` file supplies the initial defaults and the web server settings:
 
 | Variable | Default | Description |
 |---|---:|---|
@@ -76,7 +84,9 @@ sudo systemctl restart smartgrill
 Replace `IP-ADDRESS` with the IP address or hostname of the Raspberry Pi.
 
 - Dashboard: `http://IP-ADDRESS:8000/`
+- Settings: `http://IP-ADDRESS:8000/settings`
 - Status API: `http://IP-ADDRESS:8000/api/status`
+- Settings API: `http://IP-ADDRESS:8000/api/settings`
 - Health API: `http://IP-ADDRESS:8000/api/health`
 - OpenAPI documentation: `http://IP-ADDRESS:8000/docs`
 
@@ -172,12 +182,11 @@ If `gcc` or `cc1` is using CPU, compilation is still running.
 
 Planned improvements include:
 
-- Configurable probe names
 - Target temperatures and alerts
 - Temperature graphs and history
 - MQTT support
 - Improved Homey integration
-- Web-based configuration
+- Bluetooth device scanning and a first-run setup wizard
 
 ## Contributing
 
