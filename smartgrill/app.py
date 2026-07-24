@@ -5,8 +5,9 @@ import logging
 from contextlib import asynccontextmanager
 from datetime import datetime
 from pathlib import Path
+from typing import Any
 
-from fastapi import FastAPI
+from fastapi import Body, FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -47,6 +48,31 @@ async def dashboard() -> FileResponse:
 @app.get("/api/status")
 async def api_status():
     return await state.snapshot()
+
+
+@app.get("/api/settings")
+async def api_get_settings():
+    return settings.public()
+
+
+@app.post("/api/settings")
+async def api_update_settings(payload: dict[str, Any] = Body(...)):
+    previous_address = settings.address
+
+    try:
+        settings.update(payload)
+    except (TypeError, ValueError) as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except OSError as exc:
+        logging.exception("Kon SmartGrill-instellingen niet opslaan")
+        raise HTTPException(
+            status_code=500,
+            detail="De instellingen konden niet worden opgeslagen",
+        ) from exc
+
+    response = settings.public()
+    response["restart_required"] = settings.address != previous_address
+    return response
 
 
 @app.get("/api/health")
