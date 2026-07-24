@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Instellingen | SmartGrill</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <main class="shell settings-shell">
+    <header>
+      <div>
+        <p class="eyebrow">ToGrill AT-02</p>
+        <h1>Instellingen</h1>
+      </div>
+      <a class="button secondary" href="/">Terug naar dashboard</a>
+    </header>
+
+    <form id="settings-form" class="settings-card">
+      <section>
+        <h2>Bluetooth</h2>
+        <label>
+          Bluetooth-adres
+          <input id="address" name="address" type="text" autocomplete="off" placeholder="AA:BB:CC:DD:EE:FF" required>
+        </label>
+      </section>
+
+      <section>
+        <h2>Verbinding</h2>
+        <div class="form-grid">
+          <label>
+            Opnieuw verbinden na (seconden)
+            <input id="reconnect-delay" name="reconnect_delay" type="number" min="1" max="300" required>
+          </label>
+          <label>
+            Data verouderd na (seconden)
+            <input id="stale-after" name="stale_after" type="number" min="5" max="600" required>
+          </label>
+        </div>
+      </section>
+
+      <section>
+        <h2>Probe-namen</h2>
+        <div id="probe-fields" class="form-grid"></div>
+      </section>
+
+      <div class="form-actions">
+        <p id="message" class="form-message" role="status" aria-live="polite"></p>
+        <button id="save-button" class="button" type="submit">Instellingen opslaan</button>
+      </div>
+    </form>
+  </main>
+  <script src="/static/settings.js"></script>
+</body>
+</html>
