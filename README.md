@@ -108,6 +108,17 @@ Temperature, battery and connection alerts can be configured on the Settings
 page. SmartGrill stores Web Push subscriptions and its private VAPID key in the
 local `data/` directory. Do not publish this directory or its contents.
 
+Set `VAPID_SUBJECT` in `.env` to a public HTTPS URL or a real contact address,
+for example:
+
+```dotenv
+VAPID_SUBJECT=https://grill.example.com
+# or: VAPID_SUBJECT=mailto:admin@example.com
+```
+
+Do not use `localhost`, a `.local` hostname or a `.local` email domain. Apple
+Web Push rejects such a VAPID subject with `403 BadJwtToken`.
+
 > The existing settings and push API endpoints do not provide application-level
 > authentication. Protect an internet-facing SmartGrill installation through
 > the reverse proxy and do not expose port 8000 directly.
