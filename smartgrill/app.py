@@ -45,6 +45,11 @@ async def dashboard() -> FileResponse:
     return FileResponse(BASE_DIR / "templates" / "index.html")
 
 
+@app.get("/settings", include_in_schema=False)
+async def settings_page() -> FileResponse:
+    return FileResponse(BASE_DIR / "templates" / "settings.html")
+
+
 @app.get("/api/status")
 async def api_status():
     return await state.snapshot()
