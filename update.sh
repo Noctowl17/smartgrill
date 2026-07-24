@@ -24,7 +24,7 @@ echo "==> Pulling latest changes"
 git pull --ff-only
 
 echo "==> Updating Python dependencies"
-sudo -u "$USER_NAME" "$VENV/bin/pip" install -r requirements.txt
+sudo -u "$USER_NAME" env AIOHTTP_NO_EXTENSIONS=1 "$VENV/bin/pip" install -r requirements.txt
 
 echo "==> Updating systemd service"
 sed \
