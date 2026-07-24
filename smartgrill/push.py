@@ -18,6 +18,29 @@ BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = Path(
     os.getenv("SMARTGRILL_DATA_DIR", BASE_DIR.parent / "data"),
 )
+DEFAULT_VAPID_SUBJECT = "https://github.com/Noctowl17/smartgrill"
+
+
+def _vapid_subject() -> str:
+    subject = os.getenv("VAPID_SUBJECT", DEFAULT_VAPID_SUBJECT).strip()
+    parsed = urlparse(subject)
+
+    if parsed.scheme == "mailto":
+        address = parsed.path
+        if "@" in address and not any(character.isspace() for character in address):
+            domain = address.rsplit("@", 1)[1].lower()
+            if domain != "localhost" and not domain.endswith(".local"):
+                return subject
+
+    if parsed.scheme == "https" and parsed.netloc:
+        hostname = (parsed.hostname or "").lower()
+        if hostname != "localhost" and not hostname.endswith(".local"):
+            return subject
+
+    raise RuntimeError(
+        "VAPID_SUBJECT moet een publiek https-adres of mailto-adres zijn; "
+        "localhost- en .local-adressen worden door Apple Web Push geweigerd"
+    )
 
 
 class PushService:
@@ -25,10 +48,7 @@ class PushService:
         self.data_dir = DATA_DIR
         self.private_key_path = self.data_dir / "vapid_private.pem"
         self.subscriptions_path = self.data_dir / "push_subscriptions.json"
-        self.subject = os.getenv(
-            "VAPID_SUBJECT",
-            "mailto:admin@smartgrill.local",
-        )
+        self.subject = _vapid_subject()
         self._lock = asyncio.Lock()
 
         self.data_dir.mkdir(parents=True, exist_ok=True)
