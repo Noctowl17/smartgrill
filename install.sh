@@ -12,6 +12,10 @@ info() {
   printf '\n==> %s\n' "$1"
 }
 
+warn() {
+  printf '\nWarning: %s\n' "$1" >&2
+}
+
 fail() {
   printf '\nError: %s\n' "$1" >&2
   exit 1
@@ -23,6 +27,27 @@ command -v python3 >/dev/null 2>&1 || fail "python3 is not installed"
 [[ -f "$SERVICE_TEMPLATE" ]] || fail "systemd service template is missing"
 
 cd "$ROOT"
+
+info "Preparing Bluetooth"
+if command -v rfkill >/dev/null 2>&1; then
+  if rfkill list bluetooth >/dev/null 2>&1; then
+    if rfkill list bluetooth | grep -q "Soft blocked: yes"; then
+      rfkill unblock bluetooth || warn "Bluetooth could not be unblocked automatically"
+    fi
+
+    if rfkill list bluetooth | grep -q "Hard blocked: yes"; then
+      warn "Bluetooth is hard blocked and must be enabled manually"
+    fi
+  else
+    warn "No Bluetooth adapter was found by rfkill"
+  fi
+else
+  warn "rfkill is not installed; Bluetooth block status could not be checked"
+fi
+
+if systemctl list-unit-files bluetooth.service >/dev/null 2>&1; then
+  systemctl enable --now bluetooth.service || warn "Bluetooth service could not be enabled"
+fi
 
 info "Creating Python virtual environment"
 if [[ ! -x "$VENV/bin/python" ]]; then
