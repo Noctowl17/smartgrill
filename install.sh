@@ -4,27 +4,56 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 USER_NAME="${SUDO_USER:-$USER}"
 GROUP_NAME="$(id -gn "$USER_NAME")"
+VENV="$ROOT/.venv"
+SERVICE_TEMPLATE="$ROOT/systemd/smartgrill.service.template"
+SERVICE_FILE="/etc/systemd/system/smartgrill.service"
+
+info() {
+  printf '\n==> %s\n' "$1"
+}
+
+fail() {
+  printf '\nError: %s\n' "$1" >&2
+  exit 1
+}
+
+command -v python3 >/dev/null 2>&1 || fail "python3 is not installed"
+[[ -f "$ROOT/requirements.txt" ]] || fail "requirements.txt is missing"
+[[ -f "$ROOT/.env.example" ]] || fail ".env.example is missing"
+[[ -f "$SERVICE_TEMPLATE" ]] || fail "systemd service template is missing"
 
 cd "$ROOT"
-python3 -m venv .venv
-.venv/bin/python -m pip install --upgrade pip
-.venv/bin/pip install -r requirements.txt
 
-if [[ ! -f .env ]]; then
-  cp .env.example .env
+info "Creating Python virtual environment"
+if [[ ! -x "$VENV/bin/python" ]]; then
+  sudo -u "$USER_NAME" python3 -m venv "$VENV"
 fi
 
+info "Installing Python dependencies"
+sudo -u "$USER_NAME" "$VENV/bin/python" -m pip install --upgrade pip
+sudo -u "$USER_NAME" "$VENV/bin/pip" install -r requirements.txt
+
+if [[ ! -f "$ROOT/.env" ]]; then
+  info "Creating .env from .env.example"
+  sudo -u "$USER_NAME" cp "$ROOT/.env.example" "$ROOT/.env"
+  printf '\nEdit %s and set the Bluetooth MAC address before normal use.\n' "$ROOT/.env"
+fi
+
+info "Installing systemd service"
 sed \
   -e "s|__USER__|$USER_NAME|g" \
   -e "s|__GROUP__|$GROUP_NAME|g" \
   -e "s|__DIR__|$ROOT|g" \
-  systemd/smartgrill.service.template | sudo tee /etc/systemd/system/smartgrill.service >/dev/null
+  "$SERVICE_TEMPLATE" | tee "$SERVICE_FILE" >/dev/null
 
-sudo systemctl daemon-reload
-sudo systemctl enable --now smartgrill
+systemctl daemon-reload
+systemctl enable --now smartgrill
 
-echo
-echo "SmartGrill is geinstalleerd."
-echo "Dashboard: http://$(hostname -I | awk '{print $1}'):8000"
-echo "Status: sudo systemctl status smartgrill"
-echo "Logs: journalctl -u smartgrill -f"
+IP_ADDRESS="$(hostname -I 2>/dev/null | awk '{print $1}')"
+PORT="$(sed -n 's/^SMARTGRILL_PORT=//p' "$ROOT/.env" | tail -n 1)"
+PORT="${PORT:-8000}"
+
+printf '\nSmartGrill is installed and running.\n'
+printf 'Dashboard: http://%s:%s\n' "${IP_ADDRESS:-IP-ADDRESS}" "$PORT"
+printf 'Status: sudo systemctl status smartgrill\n'
+printf 'Logs: journalctl -u smartgrill -f\n'

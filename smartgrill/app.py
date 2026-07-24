@@ -35,7 +35,7 @@ async def lifespan(_: FastAPI):
         pass
 
 
-app = FastAPI(title="SmartGrill", version="1.0.0", lifespan=lifespan)
+app = FastAPI(title="SmartGrill", version="0.1.1", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 
 

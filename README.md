@@ -1,52 +1,96 @@
 # SmartGrill
 
-WiFi-dashboard en REST API voor een ToGrill AT-02 via een Raspberry Pi met Bluetooth.
+SmartGrill is a lightweight web dashboard and REST API for the ToGrill AT-02 Bluetooth BBQ thermometer. It is designed to run on a Raspberry Pi and automatically reconnect to the thermometer when the Bluetooth connection is interrupted.
 
-## Functies
+## Features
 
-- Kamado/ambient en Probe 1 t/m 4
-- Live dashboard op poort 8000
-- REST API voor Homey
-- Automatisch opnieuw verbinden
-- Automatisch starten via systemd
-- Geschikt voor een reverse proxy
+- Live web dashboard for ambient and probe temperatures
+- Support for Probe 1 through Probe 4
+- Automatic Bluetooth reconnect
+- REST API for integrations such as Homey
+- Health endpoint for monitoring
+- Automatic startup through systemd
+- Suitable for use behind a reverse proxy
+- Tested on Raspberry Pi Zero W
 
-## Installatie op Raspberry Pi OS
+## Requirements
+
+- Raspberry Pi with Bluetooth support
+- Raspberry Pi OS
+- Python 3
+- ToGrill AT-02 or compatible thermometer
+- Network connection for the dashboard and API
+
+## Installation
+
+Clone the repository:
 
 ```bash
-git clone https://github.com/JOUW-GEBRUIKERSNAAM/smartgrill.git
+git clone https://github.com/Noctowl17/smartgrill.git
 cd smartgrill
-sudo ./install.sh
 ```
 
-Het standaard Bluetooth-adres is al ingesteld op:
+Create the local configuration:
 
-```text
-AA:BB:CC:DD:EE:FF
+```bash
+cp .env.example .env
+nano .env
 ```
 
-Aanpassen kan in `.env`.
+Set the Bluetooth MAC address of the thermometer:
 
-## URLs
+```dotenv
+TOGRILL_ADDRESS=AA:BB:CC:DD:EE:FF
+```
 
-- Dashboard: `http://IP-VAN-DE-PI:8000/`
-- Status-API: `http://IP-VAN-DE-PI:8000/api/status`
-- Health-API: `http://IP-VAN-DE-PI:8000/api/health`
-- OpenAPI: `http://IP-VAN-DE-PI:8000/docs`
+Run the installer:
 
-## Homey API-voorbeeld
+```bash
+sudo bash install.sh
+```
 
-`GET /api/status`:
+The installer creates a Python virtual environment, installs the dependencies, installs the systemd service, and starts SmartGrill.
+
+> On slower Raspberry Pi models, compiling `dbus-fast` during the first installation can take a considerable amount of time. As long as compiler processes are using CPU, the installation is still progressing.
+
+## Configuration
+
+SmartGrill reads its configuration from `.env`.
+
+| Variable | Default | Description |
+|---|---:|---|
+| `TOGRILL_ADDRESS` | `AA:BB:CC:DD:EE:FF` | Bluetooth MAC address of the thermometer |
+| `SMARTGRILL_HOST` | `0.0.0.0` | Address on which the web server listens |
+| `SMARTGRILL_PORT` | `8000` | TCP port for the dashboard and API |
+| `RECONNECT_DELAY` | `10` | Seconds before reconnecting after a Bluetooth error |
+| `STALE_AFTER` | `15` | Seconds after which temperature data is considered stale |
+
+After changing `.env`, restart SmartGrill:
+
+```bash
+sudo systemctl restart smartgrill
+```
+
+## Web interface and API
+
+Replace `IP-ADDRESS` with the IP address or hostname of the Raspberry Pi.
+
+- Dashboard: `http://IP-ADDRESS:8000/`
+- Status API: `http://IP-ADDRESS:8000/api/status`
+- Health API: `http://IP-ADDRESS:8000/api/health`
+- OpenAPI documentation: `http://IP-ADDRESS:8000/docs`
+
+### Status example
 
 ```json
 {
   "device": "AT-02",
   "connected": true,
-  "battery": 13,
+  "battery": 86,
   "last_update": "2026-07-23T22:10:00+02:00",
   "temperatures": {
-    "kamado": null,
-    "probe_1": 31.4,
+    "kamado": 112.4,
+    "probe_1": 67.8,
     "probe_2": null,
     "probe_3": null,
     "probe_4": null
@@ -54,27 +98,91 @@ Aanpassen kan in `.env`.
 }
 ```
 
-## Beheer
+## Probe mapping
 
-```bash
-sudo systemctl status smartgrill
-journalctl -u smartgrill -f
-sudo systemctl restart smartgrill
-```
-
-Bijwerken:
-
-```bash
-cd ~/smartgrill
-./update.sh
-```
-
-## Probe-mapping AT-02
-
-Voor dit model is de ontvangen lijst als volgt gemapt:
+For the tested AT-02 model, the received temperature list is mapped as follows:
 
 - index 0: Probe 1
 - index 1: Probe 2
 - index 2: Probe 3
 - index 3: Probe 4
-- index 6: ambient/kamado
+- index 6: ambient / kamado
+
+Compatible devices may expose a different mapping.
+
+## Service management
+
+Check the service status:
+
+```bash
+sudo systemctl status smartgrill
+```
+
+View live logs:
+
+```bash
+journalctl -u smartgrill -f
+```
+
+Restart the service:
+
+```bash
+sudo systemctl restart smartgrill
+```
+
+SmartGrill is enabled automatically and starts when the Raspberry Pi boots.
+
+## Updating
+
+From the repository directory:
+
+```bash
+./update.sh
+```
+
+The update script pulls the latest changes, updates Python dependencies, reinstalls the systemd service definition, and restarts SmartGrill.
+
+## Troubleshooting
+
+### The service does not start
+
+```bash
+sudo systemctl status smartgrill
+journalctl -u smartgrill -n 100 --no-pager
+```
+
+### The thermometer is not found
+
+- Verify that the thermometer is powered on.
+- Verify the MAC address in `.env`.
+- Make sure another phone or computer is not already connected to the thermometer.
+- Move the Raspberry Pi closer to the thermometer.
+
+### Installation appears stuck on `dbus-fast`
+
+On ARMv6 devices such as the Raspberry Pi Zero W, this package may need to be compiled locally. Check activity in a second SSH session:
+
+```bash
+ps -eo pid,etime,%cpu,%mem,cmd | grep -E 'pip|gcc|cc1|python' | grep -v grep
+```
+
+If `gcc` or `cc1` is using CPU, compilation is still running.
+
+## Roadmap
+
+Planned improvements include:
+
+- Configurable probe names
+- Target temperatures and alerts
+- Temperature graphs and history
+- MQTT support
+- Improved Homey integration
+- Web-based configuration
+
+## Contributing
+
+Issues and pull requests are welcome. Please test changes on a separate branch before merging them into `main`.
+
+## License
+
+This project is licensed under the terms in [LICENSE](LICENSE).
