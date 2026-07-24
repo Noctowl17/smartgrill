@@ -15,7 +15,12 @@
       </div>
       <div class="header-actions">
         <div class="connection"><span id="dot"></span><span id="connection">Verbinden...</span></div>
-        <a class="button secondary" href="/settings">Instellingen</a>
+        <a class="button secondary" href="/settings" aria-label="SmartGrill-instellingen openen">
+          <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.07-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.61-.22l-2.39.96a7.4 7.4 0 0 0-1.63-.94L14.37 2.8a.49.49 0 0 0-.49-.4h-3.84a.49.49 0 0 0-.49.4l-.36 2.52c-.59.24-1.14.56-1.64.94L5.17 5.3a.49.49 0 0 0-.61.22L2.64 8.84a.5.5 0 0 0 .12.64l2.03 1.58c-.05.31-.08.64-.08.96s.03.62.08.92l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.12.22.38.31.61.22l2.39-.96c.5.39 1.05.71 1.63.94l.36 2.52c.04.23.24.4.49.4h3.84c.24 0 .45-.17.48-.4l.36-2.52c.59-.24 1.14-.56 1.64-.94l2.39.96c.23.09.49 0 .61-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.02-1.58ZM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5Z"/>
+          </svg>
+          Instellingen
+        </a>
       </div>
     </header>
 
@@ -25,11 +30,11 @@
     </section>
 
     <section class="grid">
-      <article class="card kamado"><span>Kamado</span><strong id="kamado">--</strong><small>°C</small></article>
-      <article class="card"><span>Probe 1</span><strong id="probe_1">--</strong><small>°C</small></article>
-      <article class="card"><span>Probe 2</span><strong id="probe_2">--</strong><small>°C</small></article>
-      <article class="card"><span>Probe 3</span><strong id="probe_3">--</strong><small>°C</small></article>
-      <article class="card"><span>Probe 4</span><strong id="probe_4">--</strong><small>°C</small></article>
+      <article class="card kamado"><span id="label-kamado">Ambiance</span><strong id="kamado">--</strong><small>°C</small></article>
+      <article class="card"><span id="label-probe_1">Probe 1</span><strong id="probe_1">--</strong><small>°C</small></article>
+      <article class="card"><span id="label-probe_2">Probe 2</span><strong id="probe_2">--</strong><small>°C</small></article>
+      <article class="card"><span id="label-probe_3">Probe 3</span><strong id="probe_3">--</strong><small>°C</small></article>
+      <article class="card"><span id="label-probe_4">Probe 4</span><strong id="probe_4">--</strong><small>°C</small></article>
     </section>
   </main>
   <script src="/static/app.js"></script>

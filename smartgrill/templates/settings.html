@@ -13,20 +13,36 @@
         <p class="eyebrow">ToGrill AT-02</p>
         <h1>Instellingen</h1>
       </div>
-      <a class="button secondary" href="/">Terug naar dashboard</a>
+      <a class="button secondary" href="/">← Terug naar dashboard</a>
     </header>
 
     <form id="settings-form" class="settings-card">
       <section>
         <h2>Bluetooth</h2>
+        <p class="section-description">Vul het Bluetooth MAC-adres van de thermometer in.</p>
         <label>
           Bluetooth-adres
-          <input id="address" name="address" type="text" autocomplete="off" placeholder="AA:BB:CC:DD:EE:FF" required>
+          <input
+            id="address"
+            name="address"
+            type="text"
+            autocomplete="off"
+            autocapitalize="characters"
+            spellcheck="false"
+            inputmode="text"
+            maxlength="17"
+            pattern="[0-9A-Fa-f]{2}(:[0-9A-Fa-f]{2}){5}"
+            placeholder="AA:BB:CC:DD:EE:FF"
+            aria-describedby="address-help"
+            required
+          >
+          <span id="address-help" class="field-help">Bijvoorbeeld AA:BB:CC:DD:EE:FF</span>
         </label>
       </section>
 
       <section>
         <h2>Verbinding</h2>
+        <p class="section-description">Bepaal hoe snel SmartGrill opnieuw verbindt en wanneer meetdata als verouderd geldt.</p>
         <div class="form-grid">
           <label>
             Opnieuw verbinden na (seconden)
@@ -41,6 +57,7 @@
 
       <section>
         <h2>Probe-namen</h2>
+        <p class="section-description">Kies herkenbare namen; deze worden ook op het dashboard gebruikt.</p>
         <div id="probe-fields" class="form-grid"></div>
       </section>
 
