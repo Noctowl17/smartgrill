@@ -56,7 +56,7 @@ fi
 
 info "Installing Python dependencies"
 sudo -u "$USER_NAME" "$VENV/bin/python" -m pip install --upgrade pip
-sudo -u "$USER_NAME" "$VENV/bin/pip" install -r requirements.txt
+sudo -u "$USER_NAME" env AIOHTTP_NO_EXTENSIONS=1 "$VENV/bin/pip" install -r requirements.txt
 
 if [[ ! -f "$ROOT/.env" ]]; then
   info "Creating .env from .env.example"
