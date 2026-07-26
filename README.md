@@ -2,6 +2,8 @@
 
 SmartGrill is a lightweight web dashboard and REST API for the ToGrill AT-02 Bluetooth BBQ thermometer. It is designed to run on a Raspberry Pi and automatically reconnect to the thermometer when the Bluetooth connection is interrupted.
 
+This project was largely brought to life with the assistance of AI tools during development.
+
 ## Features
 
 - Live web dashboard for ambient and probe temperatures
