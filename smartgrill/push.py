@@ -18,7 +18,7 @@ BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = Path(
     os.getenv("SMARTGRILL_DATA_DIR", BASE_DIR.parent / "data"),
 )
-DEFAULT_VAPID_SUBJECT = "https://github.com/Noctowl17/smartgrill"
+DEFAULT_VAPID_SUBJECT = "https://github.com"
 
 
 def _vapid_subject() -> str:
@@ -32,14 +32,22 @@ def _vapid_subject() -> str:
             if domain != "localhost" and not domain.endswith(".local"):
                 return subject
 
-    if parsed.scheme == "https" and parsed.netloc:
+    if (
+        parsed.scheme == "https"
+        and parsed.netloc
+        and parsed.path in {"", "/"}
+        and not parsed.params
+        and not parsed.query
+        and not parsed.fragment
+    ):
         hostname = (parsed.hostname or "").lower()
         if hostname != "localhost" and not hostname.endswith(".local"):
             return subject
 
     raise RuntimeError(
-        "VAPID_SUBJECT moet een publiek https-adres of mailto-adres zijn; "
-        "localhost- en .local-adressen worden door Apple Web Push geweigerd"
+        "VAPID_SUBJECT moet een publieke https-origin zonder pad of een "
+        "mailto-adres zijn; localhost- en .local-adressen worden door Apple "
+        "Web Push geweigerd"
     )
 
 
