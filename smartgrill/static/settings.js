@@ -3,11 +3,10 @@ const message = document.getElementById("message");
 const saveButton = document.getElementById("save-button");
 const probeFields = document.getElementById("probe-fields");
 const defaultProbeLabels = ["Ambiance", "Probe 1", "Probe 2", "Probe 3", "Probe 4"];
-const sensorKeys = ["kamado", "probe_1", "probe_2", "probe_3", "probe_4"];
 const alertsForm = document.getElementById("alerts-form");
 const alertsMessage = document.getElementById("alerts-message");
-const alertFields = document.getElementById("alert-fields");
 const saveAlertsButton = document.getElementById("save-alerts-button");
+let alertSensors = {};
 
 function showMessage(text, type = "") {
   message.textContent = text;
@@ -36,55 +35,6 @@ function createProbeFields(names) {
 function showAlertsMessage(text, type = "") {
   alertsMessage.textContent = text;
   alertsMessage.className = `form-message ${type}`.trim();
-}
-
-function createAlertFields(data) {
-  alertFields.replaceChildren();
-  const probeNames = data.probe_names || defaultProbeLabels;
-
-  sensorKeys.forEach((key, index) => {
-    const config = data.sensors?.[key] || {};
-    const row = document.createElement("div");
-    row.className = "alert-row";
-    row.dataset.sensorKey = key;
-
-    const toggleLabel = document.createElement("label");
-    toggleLabel.className = "alert-toggle";
-    const toggle = document.createElement("input");
-    toggle.type = "checkbox";
-    toggle.checked = Boolean(config.enabled);
-    toggle.dataset.field = "enabled";
-    const name = document.createElement("span");
-    name.textContent = probeNames[index] || defaultProbeLabels[index];
-    toggleLabel.append(toggle, name);
-
-    const minimumLabel = document.createElement("label");
-    minimumLabel.textContent = "Minimum °C";
-    const minimum = document.createElement("input");
-    minimum.type = "number";
-    minimum.min = "-50";
-    minimum.max = "400";
-    minimum.step = "0.1";
-    minimum.placeholder = "Niet ingesteld";
-    minimum.value = config.minimum ?? "";
-    minimum.dataset.field = "minimum";
-    minimumLabel.appendChild(minimum);
-
-    const maximumLabel = document.createElement("label");
-    maximumLabel.textContent = "Maximum / doel °C";
-    const maximum = document.createElement("input");
-    maximum.type = "number";
-    maximum.min = "-50";
-    maximum.max = "400";
-    maximum.step = "0.1";
-    maximum.placeholder = "Niet ingesteld";
-    maximum.value = config.maximum ?? "";
-    maximum.dataset.field = "maximum";
-    maximumLabel.appendChild(maximum);
-
-    row.append(toggleLabel, minimumLabel, maximumLabel);
-    alertFields.appendChild(row);
-  });
 }
 
 async function loadSettings() {
@@ -121,7 +71,7 @@ async function loadAlerts() {
       throw new Error(`HTTP ${response.status}`);
     }
     const data = await response.json();
-    createAlertFields(data);
+    alertSensors = data.sensors || {};
     document.getElementById("battery-alert-enabled").checked = Boolean(
       data.battery?.enabled,
     );
@@ -191,22 +141,8 @@ alertsForm.addEventListener("submit", async (event) => {
     return;
   }
 
-  const sensors = {};
-  alertFields.querySelectorAll(".alert-row").forEach((row) => {
-    const value = (field) => row.querySelector(`[data-field="${field}"]`);
-    sensors[row.dataset.sensorKey] = {
-      enabled: value("enabled").checked,
-      minimum: value("minimum").value === ""
-        ? null
-        : Number(value("minimum").value),
-      maximum: value("maximum").value === ""
-        ? null
-        : Number(value("maximum").value),
-    };
-  });
-
   const payload = {
-    sensors,
+    sensors: alertSensors,
     battery: {
       enabled: document.getElementById("battery-alert-enabled").checked,
       minimum: Number(document.getElementById("battery-minimum").value),
@@ -227,8 +163,8 @@ alertsForm.addEventListener("submit", async (event) => {
     if (!response.ok) {
       throw new Error(data.detail || `HTTP ${response.status}`);
     }
-    createAlertFields(data);
-    showAlertsMessage("Alarmgrenzen opgeslagen.", "success");
+    alertSensors = data.sensors || alertSensors;
+    showAlertsMessage("Meldingsinstellingen opgeslagen.", "success");
   } catch (error) {
     console.error(error);
     showAlertsMessage(

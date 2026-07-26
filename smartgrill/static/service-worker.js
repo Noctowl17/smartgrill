@@ -1,4 +1,4 @@
-const CACHE_NAME = "smartgrill-v0.2.0";
+const CACHE_NAME = "smartgrill-v0.2.1";
 const STATIC_ASSETS = [
   "/static/style.css",
   "/static/app.js",

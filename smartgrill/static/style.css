@@ -23,6 +23,18 @@
   display: none !important;
 }
 
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -185,36 +197,179 @@ input:focus-visible {
 
 .card {
   position: relative;
-  min-height: 170px;
+  min-height: 235px;
   padding: 22px;
   border: 1px solid var(--border);
   border-radius: 20px;
   background: linear-gradient(145deg, var(--surface-raised), #15181c);
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .card.kamado {
   grid-column: 1 / -1;
-  min-height: 205px;
+  min-height: 225px;
 }
 
-.card span {
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.card-header > span {
   display: block;
   color: var(--muted);
   font-weight: 650;
 }
 
-.card strong {
-  display: inline-block;
+.temperature-reading {
   margin-top: 27px;
+  white-space: nowrap;
+}
+
+.temperature-reading strong {
+  display: inline-block;
+  margin: 0;
   font-size: clamp(3rem, 8vw, 5.5rem);
   line-height: 1;
 }
 
-.card small {
+.temperature-reading small {
   margin-left: 5px;
   color: #9298a3;
   font-size: 1.25rem;
+}
+
+.temperature-card.alarm-enabled {
+  border-color: rgba(243, 164, 95, 0.72);
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.18),
+    inset 0 0 0 1px rgba(243, 164, 95, 0.1);
+}
+
+.temperature-card.alarm-invalid {
+  border-color: var(--danger);
+}
+
+.alarm-toggle {
+  display: inline-flex;
+  width: 32px;
+  min-height: 32px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.alarm-toggle input[type="checkbox"] {
+  width: 23px;
+  min-height: 23px;
+  border-color: #555d69;
+  cursor: pointer;
+}
+
+.alarm-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 26px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.alarm-field {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 5px;
+  color: #9298a3;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.alarm-field > span {
+  color: inherit;
+  font-weight: inherit;
+}
+
+.alarm-field input {
+  min-width: 0;
+  min-height: 38px;
+  padding: 7px 8px;
+  border-radius: 9px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.kamado.temperature-card {
+  display: grid;
+  grid-template-areas:
+    "header controls"
+    "reading controls";
+  grid-template-columns: minmax(0, 1fr) minmax(190px, 240px);
+  grid-template-rows: auto 1fr;
+  column-gap: 28px;
+}
+
+.kamado .card-header {
+  grid-area: header;
+}
+
+.kamado .temperature-reading {
+  grid-area: reading;
+}
+
+.kamado .alarm-toggle {
+  display: none;
+}
+
+.kamado .alarm-controls {
+  grid-area: controls;
+  grid-template-columns: 1fr;
+  align-self: stretch;
+  align-content: center;
+  margin-top: 0;
+  padding-top: 0;
+  padding-left: 28px;
+  border-top: 0;
+  border-left: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.kamado .alarm-controls::before {
+  content: "Alarm";
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.kamado .card-header .alarm-toggle {
+  display: inline-flex;
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  z-index: 1;
+}
+
+.dashboard-status {
+  min-height: 1.4em;
+  margin: 12px 4px 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  text-align: right;
+}
+
+.dashboard-status.success {
+  color: #7ddd99;
+}
+
+.dashboard-status.error {
+  color: #ff8585;
 }
 
 .settings-shell {
@@ -318,30 +473,6 @@ input::placeholder {
   margin-top: 20px;
 }
 
-.alert-fields {
-  display: grid;
-  gap: 12px;
-}
-
-.alert-row {
-  display: grid;
-  grid-template-columns: minmax(150px, 1.2fr) repeat(2, minmax(130px, 1fr));
-  gap: 14px;
-  align-items: end;
-  padding: 16px;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  background: #14171b;
-}
-
-.alert-toggle {
-  display: flex;
-  min-height: 46px;
-  align-items: center;
-  gap: 10px;
-  font-size: 1rem;
-}
-
 .toggle-field {
   grid-template-columns: 1fr minmax(90px, 130px);
   align-items: end;
@@ -404,13 +535,10 @@ input::placeholder {
     grid-column: 1 / -1;
   }
 
-  .alert-row {
-    grid-template-columns: 1fr 1fr;
+  .kamado.temperature-card {
+    grid-template-columns: minmax(0, 1fr) minmax(170px, 210px);
   }
 
-  .alert-toggle {
-    grid-column: 1 / -1;
-  }
 }
 
 @media (max-width: 560px) {
@@ -434,6 +562,23 @@ input::placeholder {
 
   .toggle-field {
     grid-template-columns: 1fr minmax(90px, 130px);
+  }
+
+  .kamado.temperature-card {
+    display: block;
+  }
+
+  .kamado .alarm-controls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 26px;
+    padding-top: 14px;
+    padding-left: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    border-left: 0;
+  }
+
+  .kamado .alarm-controls::before {
+    grid-column: 1 / -1;
   }
 }
 
@@ -466,10 +611,10 @@ input::placeholder {
   }
 
   .card {
-    min-height: 145px;
+    min-height: 220px;
   }
 
-  .card strong {
+  .temperature-reading {
     margin-top: 20px;
   }
 
