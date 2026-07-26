@@ -3,7 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0d0f12">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>SmartGrill</title>
+  <link rel="manifest" href="/static/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/static/icons/icon-192.png">
   <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -13,7 +18,15 @@
         <p class="eyebrow">ToGrill AT-02</p>
         <h1>SmartGrill</h1>
       </div>
-      <div class="connection"><span id="dot"></span><span id="connection">Verbinden...</span></div>
+      <div class="header-actions">
+        <div class="connection"><span id="dot"></span><span id="connection">Verbinden...</span></div>
+        <a class="button secondary" href="/settings" aria-label="SmartGrill-instellingen openen">
+          <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.07-.94l2.03-1.58a.5.5 0 0 0 .12-.64l-1.92-3.32a.5.5 0 0 0-.61-.22l-2.39.96a7.4 7.4 0 0 0-1.63-.94L14.37 2.8a.49.49 0 0 0-.49-.4h-3.84a.49.49 0 0 0-.49.4l-.36 2.52c-.59.24-1.14.56-1.64.94L5.17 5.3a.49.49 0 0 0-.61.22L2.64 8.84a.5.5 0 0 0 .12.64l2.03 1.58c-.05.31-.08.64-.08.96s.03.62.08.92l-2.03 1.58a.5.5 0 0 0-.12.64l1.92 3.32c.12.22.38.31.61.22l2.39-.96c.5.39 1.05.71 1.63.94l.36 2.52c.04.23.24.4.49.4h3.84c.24 0 .45-.17.48-.4l.36-2.52c.59-.24 1.14-.56 1.64-.94l2.39.96c.23.09.49 0 .61-.22l1.92-3.32a.5.5 0 0 0-.12-.64l-2.02-1.58ZM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5Z"/>
+          </svg>
+          Instellingen
+        </a>
+      </div>
     </header>
 
     <section class="meta">
@@ -21,14 +34,120 @@
       <span>Laatste update <strong id="updated">--</strong></span>
     </section>
 
-    <section class="grid">
-      <article class="card kamado"><span>Kamado</span><strong id="kamado">--</strong><small>°C</small></article>
-      <article class="card"><span>Probe 1</span><strong id="probe_1">--</strong><small>°C</small></article>
-      <article class="card"><span>Probe 2</span><strong id="probe_2">--</strong><small>°C</small></article>
-      <article class="card"><span>Probe 3</span><strong id="probe_3">--</strong><small>°C</small></article>
-      <article class="card"><span>Probe 4</span><strong id="probe_4">--</strong><small>°C</small></article>
+    <section class="grid" aria-label="Temperaturen en alarmgrenzen">
+      <article class="card kamado temperature-card" data-sensor-key="kamado">
+        <div class="card-header">
+          <span id="label-kamado">Ambiance</span>
+          <label class="alarm-toggle">
+            <input type="checkbox" data-alarm-field="enabled" aria-label="Alarm voor Ambiance inschakelen">
+          </label>
+        </div>
+        <div class="temperature-reading">
+          <strong id="kamado">--</strong><small>°C</small>
+        </div>
+        <div class="alarm-controls">
+          <label class="alarm-field">
+            <span>Min</span>
+            <input type="number" min="-50" max="400" step="0.1" inputmode="decimal" placeholder="--" data-alarm-field="minimum" aria-label="Minimumtemperatuur Ambiance">
+          </label>
+          <label class="alarm-field">
+            <span>Max</span>
+            <input type="number" min="-50" max="400" step="0.1" inputmode="decimal" placeholder="--" data-alarm-field="maximum" aria-label="Maximumtemperatuur Ambiance">
+          </label>
+        </div>
+      </article>
+
+      <article class="card temperature-card" data-sensor-key="probe_1">
+        <div class="card-header">
+          <span id="label-probe_1">Probe 1</span>
+          <label class="alarm-toggle">
+            <input type="checkbox" data-alarm-field="enabled" aria-label="Alarm voor Probe 1 inschakelen">
+          </label>
+        </div>
+        <div class="temperature-reading">
+          <strong id="probe_1">--</strong><small>°C</small>
+        </div>
+        <div class="alarm-controls">
+          <label class="alarm-field">
+            <span>Min</span>
+            <input type="number" min="-50" max="400" step="0.1" inputmode="decimal" placeholder="--" data-alarm-field="minimum" aria-label="Minimumtemperatuur Probe 1">
+          </label>
+          <label class="alarm-field">
+            <span>Max</span>
+            <input type="number" min="-50" max="400" step="0.1" inputmode="decimal" placeholder="--" data-alarm-field="maximum" aria-label="Maximumtemperatuur Probe 1">
+          </label>
+        </div>
+      </article>
+
+      <article class="card temperature-card" data-sensor-key="probe_2">
+        <div class="card-header">
+          <span id="label-probe_2">Probe 2</span>
+          <label class="alarm-toggle">
+            <input type="checkbox" data-alarm-field="enabled" aria-label="Alarm voor Probe 2 inschakelen">
+          </label>
+        </div>
+        <div class="temperature-reading">
+          <strong id="probe_2">--</strong><small>°C</small>
+        </div>
+        <div class="alarm-controls">
+          <label class="alarm-field">
+            <span>Min</span>
+            <input type="number" min="-50" max="400" step="0.1" inputmode="decimal" placeholder="--" data-alarm-field="minimum" aria-label="Minimumtemperatuur Probe 2">
+          </label>
+          <label class="alarm-field">
+            <span>Max</span>
+            <input type="number" min="-50" max="400" step="0.1" inputmode="decimal" placeholder="--" data-alarm-field="maximum" aria-label="Maximumtemperatuur Probe 2">
+          </label>
+        </div>
+      </article>
+
+      <article class="card temperature-card" data-sensor-key="probe_3">
+        <div class="card-header">
+          <span id="label-probe_3">Probe 3</span>
+          <label class="alarm-toggle">
+            <input type="checkbox" data-alarm-field="enabled" aria-label="Alarm voor Probe 3 inschakelen">
+          </label>
+        </div>
+        <div class="temperature-reading">
+          <strong id="probe_3">--</strong><small>°C</small>
+        </div>
+        <div class="alarm-controls">
+          <label class="alarm-field">
+            <span>Min</span>
+            <input type="number" min="-50" max="400" step="0.1" inputmode="decimal" placeholder="--" data-alarm-field="minimum" aria-label="Minimumtemperatuur Probe 3">
+          </label>
+          <label class="alarm-field">
+            <span>Max</span>
+            <input type="number" min="-50" max="400" step="0.1" inputmode="decimal" placeholder="--" data-alarm-field="maximum" aria-label="Maximumtemperatuur Probe 3">
+          </label>
+        </div>
+      </article>
+
+      <article class="card temperature-card" data-sensor-key="probe_4">
+        <div class="card-header">
+          <span id="label-probe_4">Probe 4</span>
+          <label class="alarm-toggle">
+            <input type="checkbox" data-alarm-field="enabled" aria-label="Alarm voor Probe 4 inschakelen">
+          </label>
+        </div>
+        <div class="temperature-reading">
+          <strong id="probe_4">--</strong><small>°C</small>
+        </div>
+        <div class="alarm-controls">
+          <label class="alarm-field">
+            <span>Min</span>
+            <input type="number" min="-50" max="400" step="0.1" inputmode="decimal" placeholder="--" data-alarm-field="minimum" aria-label="Minimumtemperatuur Probe 4">
+          </label>
+          <label class="alarm-field">
+            <span>Max</span>
+            <input type="number" min="-50" max="400" step="0.1" inputmode="decimal" placeholder="--" data-alarm-field="maximum" aria-label="Maximumtemperatuur Probe 4">
+          </label>
+        </div>
+      </article>
     </section>
+    <p id="alarm-save-status" class="dashboard-status" role="status" aria-live="polite"></p>
   </main>
   <script src="/static/app.js"></script>
+  <script src="/static/pwa.js"></script>
 </body>
 </html>

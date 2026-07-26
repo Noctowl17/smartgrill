@@ -1,3 +1,4 @@
 fastapi==0.116.1
 uvicorn==0.35.0
 togrill-bluetooth==0.8.1
+pywebpush==2.3.0

@@ -10,7 +10,7 @@ User=__USER__
 Group=__GROUP__
 WorkingDirectory=__DIR__
 EnvironmentFile=__DIR__/.env
-ExecStart=__DIR__/.venv/bin/uvicorn smartgrill.app:app --host 0.0.0.0 --port 8000
+ExecStart=/bin/sh -c 'exec __DIR__/.venv/bin/uvicorn smartgrill.app:app --host "$SMARTGRILL_HOST" --port "$SMARTGRILL_PORT"'
 Restart=always
 RestartSec=10
 Environment=PYTHONUNBUFFERED=1
