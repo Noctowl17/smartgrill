@@ -34,13 +34,123 @@
       <span>Laatste update <strong id="updated">--</strong></span>
     </section>
 
-    <section class="grid">
-      <article class="card kamado"><span id="label-kamado">Ambiance</span><strong id="kamado">--</strong><small>°C</small></article>
-      <article class="card"><span id="label-probe_1">Probe 1</span><strong id="probe_1">--</strong><small>°C</small></article>
-      <article class="card"><span id="label-probe_2">Probe 2</span><strong id="probe_2">--</strong><small>°C</small></article>
-      <article class="card"><span id="label-probe_3">Probe 3</span><strong id="probe_3">--</strong><small>°C</small></article>
-      <article class="card"><span id="label-probe_4">Probe 4</span><strong id="probe_4">--</strong><small>°C</small></article>
+    <section class="grid" aria-label="Temperaturen en alarmgrenzen">
+      <article class="card kamado temperature-card" data-sensor-key="kamado">
+        <div class="card-header">
+          <span id="label-kamado">Ambiance</span>
+          <label class="alarm-toggle">
+            <span class="sr-only">Alarm voor Ambiance inschakelen</span>
+            <input type="checkbox" data-alarm-field="enabled" aria-label="Alarm voor Ambiance inschakelen">
+          </label>
+        </div>
+        <div class="temperature-reading">
+          <strong id="kamado">--</strong><small>°C</small>
+        </div>
+        <div class="alarm-controls">
+          <label class="alarm-field">
+            <span>Min</span>
+            <input type="number" min="-50" max="400" step="0.1" inputmode="decimal" placeholder="--" data-alarm-field="minimum" aria-label="Minimumtemperatuur Ambiance">
+          </label>
+          <label class="alarm-field">
+            <span>Max</span>
+            <input type="number" min="-50" max="400" step="0.1" inputmode="decimal" placeholder="--" data-alarm-field="maximum" aria-label="Maximumtemperatuur Ambiance">
+          </label>
+        </div>
+      </article>
+
+      <article class="card temperature-card" data-sensor-key="probe_1">
+        <div class="card-header">
+          <span id="label-probe_1">Probe 1</span>
+          <label class="alarm-toggle">
+            <span class="sr-only">Alarm voor Probe 1 inschakelen</span>
+            <input type="checkbox" data-alarm-field="enabled" aria-label="Alarm voor Probe 1 inschakelen">
+          </label>
+        </div>
+        <div class="temperature-reading">
+          <strong id="probe_1">--</strong><small>°C</small>
+        </div>
+        <div class="alarm-controls">
+          <label class="alarm-field">
+            <span>Min</span>
+            <input type="number" min="-50" max="400" step="0.1" inputmode="decimal" placeholder="--" data-alarm-field="minimum" aria-label="Minimumtemperatuur Probe 1">
+          </label>
+          <label class="alarm-field">
+            <span>Max</span>
+            <input type="number" min="-50" max="400" step="0.1" inputmode="decimal" placeholder="--" data-alarm-field="maximum" aria-label="Maximumtemperatuur Probe 1">
+          </label>
+        </div>
+      </article>
+
+      <article class="card temperature-card" data-sensor-key="probe_2">
+        <div class="card-header">
+          <span id="label-probe_2">Probe 2</span>
+          <label class="alarm-toggle">
+            <span class="sr-only">Alarm voor Probe 2 inschakelen</span>
+            <input type="checkbox" data-alarm-field="enabled" aria-label="Alarm voor Probe 2 inschakelen">
+          </label>
+        </div>
+        <div class="temperature-reading">
+          <strong id="probe_2">--</strong><small>°C</small>
+        </div>
+        <div class="alarm-controls">
+          <label class="alarm-field">
+            <span>Min</span>
+            <input type="number" min="-50" max="400" step="0.1" inputmode="decimal" placeholder="--" data-alarm-field="minimum" aria-label="Minimumtemperatuur Probe 2">
+          </label>
+          <label class="alarm-field">
+            <span>Max</span>
+            <input type="number" min="-50" max="400" step="0.1" inputmode="decimal" placeholder="--" data-alarm-field="maximum" aria-label="Maximumtemperatuur Probe 2">
+          </label>
+        </div>
+      </article>
+
+      <article class="card temperature-card" data-sensor-key="probe_3">
+        <div class="card-header">
+          <span id="label-probe_3">Probe 3</span>
+          <label class="alarm-toggle">
+            <span class="sr-only">Alarm voor Probe 3 inschakelen</span>
+            <input type="checkbox" data-alarm-field="enabled" aria-label="Alarm voor Probe 3 inschakelen">
+          </label>
+        </div>
+        <div class="temperature-reading">
+          <strong id="probe_3">--</strong><small>°C</small>
+        </div>
+        <div class="alarm-controls">
+          <label class="alarm-field">
+            <span>Min</span>
+            <input type="number" min="-50" max="400" step="0.1" inputmode="decimal" placeholder="--" data-alarm-field="minimum" aria-label="Minimumtemperatuur Probe 3">
+          </label>
+          <label class="alarm-field">
+            <span>Max</span>
+            <input type="number" min="-50" max="400" step="0.1" inputmode="decimal" placeholder="--" data-alarm-field="maximum" aria-label="Maximumtemperatuur Probe 3">
+          </label>
+        </div>
+      </article>
+
+      <article class="card temperature-card" data-sensor-key="probe_4">
+        <div class="card-header">
+          <span id="label-probe_4">Probe 4</span>
+          <label class="alarm-toggle">
+            <span class="sr-only">Alarm voor Probe 4 inschakelen</span>
+            <input type="checkbox" data-alarm-field="enabled" aria-label="Alarm voor Probe 4 inschakelen">
+          </label>
+        </div>
+        <div class="temperature-reading">
+          <strong id="probe_4">--</strong><small>°C</small>
+        </div>
+        <div class="alarm-controls">
+          <label class="alarm-field">
+            <span>Min</span>
+            <input type="number" min="-50" max="400" step="0.1" inputmode="decimal" placeholder="--" data-alarm-field="minimum" aria-label="Minimumtemperatuur Probe 4">
+          </label>
+          <label class="alarm-field">
+            <span>Max</span>
+            <input type="number" min="-50" max="400" step="0.1" inputmode="decimal" placeholder="--" data-alarm-field="maximum" aria-label="Maximumtemperatuur Probe 4">
+          </label>
+        </div>
+      </article>
     </section>
+    <p id="alarm-save-status" class="dashboard-status" role="status" aria-live="polite"></p>
   </main>
   <script src="/static/app.js"></script>
   <script src="/static/pwa.js"></script>
