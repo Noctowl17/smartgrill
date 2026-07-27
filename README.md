@@ -213,15 +213,6 @@ ps -eo pid,etime,%cpu,%mem,cmd | grep -E 'pip|gcc|cc1|python' | grep -v grep
 
 If `gcc` or `cc1` is using CPU, compilation is still running.
 
-## Roadmap
-
-Planned improvements include:
-
-- Temperature graphs and history
-- MQTT support
-- Improved Homey integration
-- Bluetooth device scanning and a first-run setup wizard
-
 ## Contributing
 
 Issues and pull requests are welcome. Please test changes on a separate branch before merging them into `main`.
