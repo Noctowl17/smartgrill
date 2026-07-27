@@ -100,10 +100,17 @@
             </span>
           </label>
           <label>
-            Hysterese (°C)
-            <input id="hysteresis" type="number" min="0.1" max="20" step="0.1">
+            Alarminterval (minuten)
+            <input
+              id="alarm-interval-minutes"
+              type="number"
+              min="1"
+              max="1440"
+              step="1"
+              required
+            >
             <span class="field-help">
-              Voorkomt herhaalde meldingen wanneer een waarde rond de grens schommelt.
+              Herhaalt de melding zolang een temperatuur boven of onder de ingestelde grens blijft.
             </span>
           </label>
         </div>

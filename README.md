@@ -106,9 +106,11 @@ On iOS or iPadOS 16.4 or newer:
 4. Open **Settings** and select **Enable notifications**.
 5. Send a test notification before enabling temperature limits.
 
-Temperature, battery and connection alerts can be configured on the Settings
-page. SmartGrill stores Web Push subscriptions and its private VAPID key in the
-local `data/` directory. Do not publish this directory or its contents.
+Temperature limits can be configured for each probe on the dashboard. The
+Settings page controls battery and connection alerts, plus the interval for
+repeating a temperature alert while its value remains outside the configured
+limits. SmartGrill stores Web Push subscriptions and its private VAPID key in
+the local `data/` directory. Do not publish this directory or its contents.
 
 Set `VAPID_SUBJECT` in `.env` to a public HTTPS URL or a real contact address,
 for example:

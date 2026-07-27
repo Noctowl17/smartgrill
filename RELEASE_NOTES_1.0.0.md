@@ -13,9 +13,11 @@ reconnection, configurable probes and optional push notifications.
 - Installable Progressive Web App for desktop and mobile devices
 - Minimum and maximum temperature alerts for all five sensors
 - Optional low-battery and Bluetooth-disconnection alerts
-- Configurable hysteresis to prevent repeated notifications around a
-  temperature threshold
+- Configurable repeat interval for notifications while a temperature remains
+  outside its limits
 - Web Push subscriptions, alert settings and VAPID keys stored across restarts
+- Reliable PWA updates that refresh cached JavaScript before using offline
+  assets
 - REST status, settings and health endpoints for integrations such as Homey
 - Automatic startup and service management through systemd
 - Installation and update scripts tailored for Raspberry Pi OS, including

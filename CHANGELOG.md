@@ -10,7 +10,7 @@ All notable changes to SmartGrill will be documented in this file.
 - Web Push subscriptions and test notifications
 - Minimum and maximum temperature alerts for all five sensors
 - Low-battery and Bluetooth-disconnection alerts
-- Configurable hysteresis to prevent repeated notifications around a threshold
+- Configurable alarm interval for repeated notifications while a temperature remains outside its limits
 - Persistent VAPID keys, push subscriptions and alert settings
 - General-purpose README for new users
 - `.gitignore`
@@ -24,6 +24,10 @@ All notable changes to SmartGrill will be documented in this file.
 - systemd service now uses host and port values from `.env`
 - Update process now refreshes the systemd service definition
 - Dashboard now uses the configured names for the ambient sensor and probes
+
+### Fixed
+
+- PWA updates now refresh cached JavaScript before falling back to offline assets
 
 ## [0.1.0]
 
