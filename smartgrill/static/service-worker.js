@@ -1,4 +1,4 @@
-const CACHE_NAME = "smartgrill-v0.2.1";
+const CACHE_NAME = "smartgrill-v0.2.2";
 const STATIC_ASSETS = [
   "/static/style.css",
   "/static/app.js",
@@ -41,15 +41,15 @@ self.addEventListener("fetch", (event) => {
 
   if (requestUrl.pathname.startsWith("/static/")) {
     event.respondWith(
-      caches.match(event.request).then(
-        (cached) =>
-          cached ||
-          fetch(event.request).then((response) => {
+      fetch(event.request)
+        .then((response) => {
+          if (response.ok) {
             const copy = response.clone();
             caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
-            return response;
-          }),
-      ),
+          }
+          return response;
+        })
+        .catch(() => caches.match(event.request)),
     );
   }
 });

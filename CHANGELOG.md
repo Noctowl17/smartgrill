@@ -13,6 +13,10 @@ All notable changes to SmartGrill will be documented in this file.
 - Configurable alarm interval for repeated notifications while a temperature remains outside its limits
 - Persistent VAPID keys, push subscriptions and alert settings
 
+### Fixed
+
+- PWA updates now refresh cached JavaScript before falling back to offline assets
+
 ## [0.1.1] - Unreleased
 
 ### Added
