@@ -80,7 +80,8 @@ async function loadAlerts() {
     document.getElementById("connection-lost").checked = Boolean(
       data.connection_lost,
     );
-    document.getElementById("hysteresis").value = data.hysteresis ?? 1;
+    document.getElementById("alarm-interval-minutes").value =
+      data.alarm_interval_minutes ?? 5;
     showAlertsMessage("");
   } catch (error) {
     console.error(error);
@@ -148,7 +149,9 @@ alertsForm.addEventListener("submit", async (event) => {
       minimum: Number(document.getElementById("battery-minimum").value),
     },
     connection_lost: document.getElementById("connection-lost").checked,
-    hysteresis: Number(document.getElementById("hysteresis").value),
+    alarm_interval_minutes: Number(
+      document.getElementById("alarm-interval-minutes").value,
+    ),
   };
 
   saveAlertsButton.disabled = true;

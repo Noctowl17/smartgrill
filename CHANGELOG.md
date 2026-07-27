@@ -10,7 +10,7 @@ All notable changes to SmartGrill will be documented in this file.
 - Web Push subscriptions and test notifications
 - Minimum and maximum temperature alerts for all five sensors
 - Low-battery and Bluetooth-disconnection alerts
-- Configurable hysteresis to prevent repeated notifications around a threshold
+- Configurable alarm interval for repeated notifications while a temperature remains outside its limits
 - Persistent VAPID keys, push subscriptions and alert settings
 
 ## [0.1.1] - Unreleased

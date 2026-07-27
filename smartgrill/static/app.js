@@ -90,7 +90,7 @@ async function saveAlerts(revision) {
     sensors: alertsState.sensors,
     battery: alertsState.battery,
     connection_lost: alertsState.connection_lost,
-    hysteresis: alertsState.hysteresis,
+    alarm_interval_minutes: alertsState.alarm_interval_minutes,
   };
 
   try {

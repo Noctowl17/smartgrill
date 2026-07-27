@@ -6,6 +6,7 @@ import logging
 import os
 from copy import deepcopy
 from pathlib import Path
+from time import monotonic
 from typing import Any
 
 from .config import settings
@@ -33,7 +34,7 @@ DEFAULT_ALERTS: dict[str, Any] = {
         "minimum": 15,
     },
     "connection_lost": False,
-    "hysteresis": 1.0,
+    "alarm_interval_minutes": 5.0,
 }
 
 
@@ -115,9 +116,14 @@ class AlertSettings:
             label="Batterijgrens",
         )
 
-        hysteresis = float(data.get("hysteresis", self._data["hysteresis"]))
-        if hysteresis < 0.1 or hysteresis > 20:
-            raise ValueError("Hysterese moet tussen 0,1 en 20 °C liggen")
+        alarm_interval = float(
+            data.get(
+                "alarm_interval_minutes",
+                self._data["alarm_interval_minutes"],
+            ),
+        )
+        if alarm_interval < 1 or alarm_interval > 1440:
+            raise ValueError("Alarminterval moet tussen 1 en 1440 minuten liggen")
 
         self._data = {
             "sensors": sensors,
@@ -128,7 +134,7 @@ class AlertSettings:
             "connection_lost": bool(
                 data.get("connection_lost", self._data["connection_lost"]),
             ),
-            "hysteresis": round(hysteresis, 1),
+            "alarm_interval_minutes": round(alarm_interval, 1),
         }
         if save:
             self.save()
@@ -154,8 +160,13 @@ class AlertMonitor:
         self.settings = alert_settings
         self.push = push_service
         self._active: set[str] = set()
+        self._last_notification: dict[str, float] = {}
         self._has_connected = False
         self._was_connected = False
+
+    def _clear_threshold(self, key: str) -> None:
+        self._active.discard(key)
+        self._last_notification.pop(key, None)
 
     async def run(self) -> None:
         while True:
@@ -175,9 +186,20 @@ class AlertMonitor:
         reset: bool,
         title: str,
         body: str,
+        repeat_after_seconds: float | None = None,
     ) -> None:
-        if active and key not in self._active:
+        first_notification = active and key not in self._active
+        repeat_notification = (
+            active
+            and repeat_after_seconds is not None
+            and key in self._active
+            and monotonic() - self._last_notification.get(key, 0)
+            >= repeat_after_seconds
+        )
+        if first_notification or repeat_notification:
             self._active.add(key)
+            if repeat_after_seconds is not None:
+                self._last_notification[key] = monotonic()
             await self.push.broadcast(
                 {
                     "title": title,
@@ -187,19 +209,19 @@ class AlertMonitor:
                 },
             )
         elif reset:
-            self._active.discard(key)
+            self._clear_threshold(key)
 
     async def evaluate(self, snapshot: dict[str, Any]) -> None:
         config = self.settings.public()
-        hysteresis = float(config["hysteresis"])
+        repeat_after_seconds = float(config["alarm_interval_minutes"]) * 60
         temperatures = snapshot.get("temperatures", {})
 
         for index, sensor_key in enumerate(SENSOR_KEYS):
             sensor = config["sensors"][sensor_key]
             value = temperatures.get(sensor_key)
             if not sensor["enabled"] or value is None:
-                self._active.discard(f"{sensor_key}:minimum")
-                self._active.discard(f"{sensor_key}:maximum")
+                self._clear_threshold(f"{sensor_key}:minimum")
+                self._clear_threshold(f"{sensor_key}:maximum")
                 continue
 
             value = float(value)
@@ -211,18 +233,24 @@ class AlertMonitor:
                 await self._threshold(
                     key=f"{sensor_key}:minimum",
                     active=value <= minimum,
-                    reset=value >= minimum + hysteresis,
+                    reset=value > minimum,
                     title=f"{label} is te koud",
                     body=f"{label} is {value:.1f} °C (minimum {minimum:.1f} °C).",
+                    repeat_after_seconds=repeat_after_seconds,
                 )
+            else:
+                self._clear_threshold(f"{sensor_key}:minimum")
             if maximum is not None:
                 await self._threshold(
                     key=f"{sensor_key}:maximum",
                     active=value >= maximum,
-                    reset=value <= maximum - hysteresis,
+                    reset=value < maximum,
                     title=f"{label} heeft de grens bereikt",
                     body=f"{label} is {value:.1f} °C (grens {maximum:.1f} °C).",
+                    repeat_after_seconds=repeat_after_seconds,
                 )
+            else:
+                self._clear_threshold(f"{sensor_key}:maximum")
 
         battery = snapshot.get("battery")
         battery_config = config["battery"]
@@ -241,12 +269,12 @@ class AlertMonitor:
                 body=f"De batterij is nog {battery_value:.0f}%.",
             )
         else:
-            self._active.discard("battery:minimum")
+            self._clear_threshold("battery:minimum")
 
         connected = bool(snapshot.get("connected"))
         if connected:
             self._has_connected = True
-            self._active.discard("connection:lost")
+            self._clear_threshold("connection:lost")
         elif (
             config["connection_lost"]
             and self._has_connected
