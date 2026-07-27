@@ -41,7 +41,7 @@ async def lifespan(_: FastAPI):
     await asyncio.gather(*tasks, return_exceptions=True)
 
 
-app = FastAPI(title="SmartGrill", version="0.2.0-beta.1", lifespan=lifespan)
+app = FastAPI(title="SmartGrill", version="1.0.0", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 
 

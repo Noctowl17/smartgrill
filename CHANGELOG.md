@@ -2,7 +2,7 @@
 
 All notable changes to SmartGrill will be documented in this file.
 
-## [0.2.0-beta.1] - Unreleased
+## [1.0.0] - 2026-07-27
 
 ### Added
 
@@ -12,11 +12,6 @@ All notable changes to SmartGrill will be documented in this file.
 - Low-battery and Bluetooth-disconnection alerts
 - Configurable hysteresis to prevent repeated notifications around a threshold
 - Persistent VAPID keys, push subscriptions and alert settings
-
-## [0.1.1] - Unreleased
-
-### Added
-
 - General-purpose README for new users
 - `.gitignore`
 - More robust installation and update scripts
