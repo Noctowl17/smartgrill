@@ -219,6 +219,12 @@ If `gcc` or `cc1` is using CPU, compilation is still running.
 
 Issues and pull requests are welcome. Please test changes on a separate branch before merging them into `main`.
 
+## Acknowledgements
+
+Bluetooth communication with the ToGrill thermometer is provided by the open-source
+[`elupus/togrill-bluetooth`](https://github.com/elupus/togrill-bluetooth) project.
+Its implementation made it possible to connect to the device and read its data.
+
 ## License
 
 This project is licensed under the terms in [LICENSE](LICENSE).
